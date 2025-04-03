@@ -3,8 +3,8 @@
 */
 
 var margin = { left:80, right:100, top:50, bottom:100 },
-    height = 500 - margin.top - margin.bottom, 
-    width = 800 - margin.left - margin.right;
+    height = 600 - margin.top - margin.bottom, 
+    width = 900 - margin.left - margin.right;
 
 var svg = d3.select("#chart-area").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -47,7 +47,10 @@ yAxis.append("text")
     .text("Population)");
 
 // Line path generator
-// TODO: Implement the line generator
+var line = d3.line()
+    .x((d) => x(d.year))
+    .y((d) => y(d.value));
+
 
 d3.json("data/example.json").then((data) => {
     // Data cleaning
@@ -57,14 +60,22 @@ d3.json("data/example.json").then((data) => {
     });
 
     // Set scale domains
-    // TODO: set domain of axes
+    x.domain(d3.extent(data, (d) => d.year));
+    y.domain([d3.min(data, (d) => d.value) * 0.95, d3.max(data, (d) => d.value) * 1.05]);
+    
 
     // Generate axes once scales have been set
     xAxis.call(xAxisCall.scale(x))
     yAxis.call(yAxisCall.scale(y))
 
     // Add line to chart
-    // TODO: add line path
+    g.append("path")
+    .attr("class", "line")
+    .attr("fill", "none")
+    .attr("stroke", "#cfcfcf")
+    .attr("stroke-width", "2")
+    .attr("d", line(data));
+
 
     /******************************** Tooltip Code ********************************/
 

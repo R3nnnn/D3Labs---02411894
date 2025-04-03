@@ -3,8 +3,8 @@
 */
 
 var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = 600 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    width = 700 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
     
 var svg = d3.select("#chart-area").append("svg")
 	.attr("width", width + margin.left + margin.right)
@@ -25,7 +25,11 @@ var xAxisCall = d3.axisBottom();
 var yAxisCall = d3.axisLeft();
 
 // Area generator
-// TODO create the area generator
+var area = d3.area()
+    .x((d) => x(d.date))  // Map x-axis to the date
+    .y0(height)           // Set the bottom of the area to the chart’s bottom
+    .y1((d) => y(d.close)); // Map y-axis to the closing price
+
 
 // Axis groups
 var xAxis = g.append("g")
@@ -59,7 +63,11 @@ d3.tsv("data/area.tsv").then((data) => {
     yAxis.call(yAxisCall.scale(y))
 
     // Add area chart
-    // TODO add the area path to the visualization
+    g.append("path")
+    .datum(data)  // Bind data
+    .attr("fill", "steelblue") // Fill color for the area
+    .attr("d", area);  // Use the area generator
+
    
 }).catch((error) => {
     console.log(error);
